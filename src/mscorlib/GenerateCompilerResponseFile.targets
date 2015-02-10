@@ -4,7 +4,7 @@
     <CompileDependsOn>GenerateCompilerResponseFile;$(CompileDependsOn)</CompileDependsOn>
   </PropertyGroup>
 
-  <Target Name="GenerateCompilerResponseFile">
+  <Target Name="GenerateCompilerResponseFile" Condition="'$(UseMonoCompiler)'=='false'">
     <Message Text="Generating module name response file: $(IntermediateOutputPath)\moduleName.rsp" />
 
     <!-- When Roslyn is NOT enabled, we need to set the module name for mscorlib -->
