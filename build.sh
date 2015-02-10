@@ -63,6 +63,11 @@ check_prereqs()
 
 build_coreclr()
 {
+    # skip coreclr build if we only want to build mscorlib
+    if [ $__UnixMscorlibOnly == 1 ]; then
+        return
+    fi
+
     # All set to commence the build
     
     echo "Commencing build of native components for $__BuildArch/$__BuildType"
@@ -95,6 +100,16 @@ build_coreclr()
     fi
 }
 
+build_mscorlib()
+{
+    echo Commencing build of mscorlib
+    xbuild /p:OS=Unix /p:BuildNugetPackage=false /p:ResGenCommand=resgen /p:UseMonoCompiler=true $__ProjectRoot/build.proj
+    
+    # we need to build a second time as there's aparently some bug with the GenerateSplitStringResources target that makes
+    # it fail the first time with a NullReferenceException, even though the resources file was written fine
+    xbuild /p:OS=Unix /p:BuildNugetPackage=false /p:ResGenCommand=resgen /p:UseMonoCompiler=true $__ProjectRoot/build.proj
+}
+
 echo "Commencing CoreCLR Repo build"
 
 # Argument types supported by this script:
@@ -121,6 +136,7 @@ __CMakeSlnDir="$__RootBinDir/CMake"
 __UnprocessedBuildArgs=
 __MSBCleanBuildArgs=
 __CleanBuild=false
+__UnixMscorlibOnly=false
 
 for i in "$@"
     do
@@ -143,6 +159,9 @@ for i in "$@"
         ;;
         clean)
         __CleanBuild=1
+        ;;
+        unixmscorlib)
+        __UnixMscorlibOnly=1
         ;;
         *)
         __UnprocessedBuildArgs="$__UnprocessedBuildArgs $i"
@@ -177,6 +196,10 @@ check_prereqs
 # Build the coreclr (native) components.
 
 build_coreclr
+
+# Build the mscorlib
+
+build_mscorlib
 
 # Build complete
 
