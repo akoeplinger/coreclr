@@ -54,6 +54,7 @@
   <!-- Common NuGet properties -->
   <PropertyGroup>
     <NuGetToolPath>$(ToolsDir)NuGet.exe</NuGetToolPath>
+    <NuGetToolPath Condition="'$(UseMonoCompiler)'=='true'">nuget</NuGetToolPath>
     <NuGetConfigFile>$(SourceDir)NuGet.Config</NuGetConfigFile>
     <NuGetConfigCommandLine
       Condition="Exists('$(NuGetConfigFile)')">-ConfigFile &quot;$(NuGetConfigFile)&quot;</NuGetConfigCommandLine>

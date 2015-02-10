@@ -29,14 +29,14 @@
 
     <!-- Download latest nuget.exe -->
     <DownloadFile
-      Condition="!Exists($(NuGetToolPath))"
+      Condition="!Exists('$(NuGetToolPath)') and '$(UseMonoCompiler)'=='false'"
       Address="http://nuget.org/nuget.exe"
       FileName="$(NuGetToolPath)" />
 
     <!-- Restore build tools -->
     <Exec
       StandardOutputImportance="Low"
-      Command="&quot;$(NuGetToolPath)&quot; install &quot; $(SourceDir).nuget\packages.config &quot;  -o &quot; $(ToolsDir) &quot; $(NuGetConfigCommandLine)" />
+      Command="&quot;$(NuGetToolPath)&quot; install &quot;$(SourceDir).nuget\packages.config&quot;  -o &quot;$(ToolsDir.TrimEnd('\'))&quot; $(NuGetConfigCommandLine)" />
 
     <Touch Files="$(BuildToolsInstallSemaphore)" AlwaysCreate="true" />
   </Target>
