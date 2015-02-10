@@ -13,12 +13,19 @@
     <PostProcessingTargets>RewriteWithBclRewriter</PostProcessingTargets>
   </PropertyGroup>
 
-  <Target Name="AfterBuild" DependsOnTargets="$(PostProcessingTargets)"
+  <Target Name="AfterBuild" Condition="'$(UseMonoCompiler)'=='false'" DependsOnTargets="$(PostProcessingTargets)"
           Inputs="@(RewrittenAssembly)" Outputs="$(FinalOutputPath)\%(RewrittenAssembly.FileName)%(RewrittenAssembly.Extension)">
     
     <!-- Copy to the final output location -->
     <Copy Retries="3" SourceFiles="@(RewrittenAssembly)" DestinationFiles="$(FinalOutputPath)\%(RewrittenAssembly.FileName)%(RewrittenAssembly.Extension)"/>
     <Copy Retries="3" SourceFiles="$(CurrentAssemblyPdb)" DestinationFiles="$(FinalOutputPath)\$(TargetName).pdb"/>
+  </Target>
+
+  <Target Name="AfterBuild" Condition="'$(UseMonoCompiler)'=='true'"
+          Inputs="@(AnnotatedAssembly)" Outputs="$(FinalOutputPath)\%(AnnotatedAssembly.FileName)%(AnnotatedAssembly.Extension)">
+    
+    <!-- Copy to the final output location -->
+    <Copy SourceFiles="@(AnnotatedAssembly)" DestinationFiles="$(FinalOutputPath)\%(AnnotatedAssembly.FileName)%(AnnotatedAssembly.Extension)"/>
   </Target>
 
 </Project>
