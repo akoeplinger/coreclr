@@ -258,11 +258,20 @@ namespace System {
         // equally valid, and all are numerically equivalent.
         //
         public Decimal(int[] bits) {
-            this.lo    = 0;
-            this.mid   = 0;
-            this.hi    = 0;
-            this.flags = 0;
-            SetBits(bits);
+            if (bits==null)
+                throw new ArgumentNullException("bits");
+            Contract.EndContractBlock();
+            if (bits.Length == 4) {
+                int f = bits[3];
+                if ((f & ~(SignMask | ScaleMask)) == 0 && (f & ScaleMask) <= (28 << 16)) {
+                    lo = bits[0];
+                    mid = bits[1];
+                    hi = bits[2];
+                    flags = f;
+                    return;
+                }
+            }
+            throw new ArgumentException(Environment.GetResourceString("Arg_DecBitCtor"));
         }
 
         private void SetBits(int[] bits) {
