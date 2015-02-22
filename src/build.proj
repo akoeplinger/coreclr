@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <Target Name="MovePDB" AfterTargets="Build">
-    <Move Condition="Exists($(MscorlibPDBPath))"
+    <Move Condition="Exists('$(MscorlibPDBPath)')"
         SourceFiles="@(PDBSToMove)"
         DestinationFolder="$(BinDir)PDB"
     />
